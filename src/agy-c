@@ -1,8 +1,31 @@
 #!/bin/bash
 set -e
-
 IMAGE_NAME="agy-box"
+ALLOWED_DIR="^$HOME/[^./]"
 
+PROMPT="[Y/n]"
+DEFAULT="Y"
+
+if [[ ! "$PWD" =~ $ALLOWED_DIR ]]; then
+    echo "ВНИМАНИЕ: запуск Antigravity в $PWD небезопасен"
+    PROMPT="[y/N]"
+    DEFAULT="N"
+fi
+
+read -r -p "Запустить Antigravity в $PWD? $PROMPT " answer
+case "${answer:-$DEFAULT}" in
+    [Nn]*)
+        echo "Запуск отменен"
+        exit 1
+        ;;
+    [Yy]*)
+        echo "[*] Запуск Antigravity"
+        ;;
+    *)
+        echo "Нераспознанный ввод, запуск отменен"
+        exit 1
+        ;;
+esac
 
 exec podman run --rm -it \
     --memory=8g --cpus=4 --pids-limit=500 \
