@@ -1,0 +1,13 @@
+#!/bin/bash
+set -e
+
+IMAGE_NAME="agy-box"
+
+
+exec podman run --rm -it \
+    --memory=8g --cpus=4 --pids-limit=500 \
+    -v agy-gemini-data:/root/.gemini:Z \
+    -v agy-config-data:/root/.config/antigravity:Z \
+    -v "${PWD}:/workspace:Z" \
+    -w /workspace \
+    "${IMAGE_NAME}" "$@"

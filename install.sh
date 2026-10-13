@@ -1,9 +1,24 @@
 #!/bin/bash
+set -e
 
-git submodule update
+git submodule update --init --recursive
 
 if ! command -v podman >> /dev/null; then
-    if command -v apt; then
+    read -r -p "podman не установлен. Установить? [Y/n]" answer
+    case "${answer:-Y}" in
+    [Nn]*)
+        echo "Установка прервана"
+        exit 1
+        ;;
+    [Yy]*)
+        ;;
+    *)
+        echo "Нераспознанный ответ. Установка прервана."
+        exit 1
+        ;;
+    esac
+
+    if command -v apt >> /dev/null; then
         sudo apt update
         sudo apt install podman -y
     
@@ -29,25 +44,7 @@ fi
 
 podman build -t agy-box -f Dockerfile .
 
-mkdir -p ~/.local/bin ~/.config/antigravity-docker
-cat << 'EOF' > ~/.local/bin/agy-c
-#!/bin/bash
-set -e
-
-IMAGE_NAME="agy-box"
-
-INTERACTIVE_FLAGS=""
-if [ -t 0 ] && [ -t 1 ]; then
-    INTERACTIVE_FLAGS="-it"
-fi
-
-exec podman run $INTERACTIVE_FLAGS --rm \
-    --memory=8g --cpus=4 --pids-limit=500 \
-    -v agy-gemini-data:/root/.gemini:Z \
-    -v agy-config-data:/root/.config/antigravity:Z \
-    -v "${PWD}:/workspace:Z" \
-    -w /workspace \
-    "${IMAGE_NAME}" "$@"
-EOF
+mkdir -p ~/.local/bin
+cat src/agy-c > ~/.local/bin/agy-c
 
 chmod +x ~/.local/bin/agy-c
