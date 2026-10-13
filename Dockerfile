@@ -12,4 +12,4 @@ COPY ag-bypass ./ag-bypass
 WORKDIR /workspace
 
 ENTRYPOINT ["/agy/entrypoint.sh"]
-CMD ["agy"]
+CMD ["agy", "--dangerously-skip-permissions"]

@@ -30,7 +30,7 @@ fi
 podman build -t agy-box -f Dockerfile .
 
 mkdir -p ~/.local/bin ~/.config/antigravity-docker
-cat << 'EOF' > ~/.local/bin/agy-с
+cat << 'EOF' > ~/.local/bin/agy-c
 #!/bin/bash
 set -e
 
@@ -42,9 +42,11 @@ if [ -t 0 ] && [ -t 1 ]; then
 fi
 
 exec podman run $INTERACTIVE_FLAGS --rm \
+    -v agy-gemini-data:/root/.gemini:Z \
+    -v agy-config-data:/root/.config/antigravity:Z \
     -v "${PWD}:/workspace:Z" \
     -w /workspace \
     "${IMAGE_NAME}" "$@"
 EOF
 
-chmod +x ~/.local/bin/agy-с
+chmod +x ~/.local/bin/agy-c
