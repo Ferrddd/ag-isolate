@@ -42,6 +42,7 @@ if [ -t 0 ] && [ -t 1 ]; then
 fi
 
 exec podman run $INTERACTIVE_FLAGS --rm \
+    --memory=8g --cpus=4 --pids-limit=500 \
     -v agy-gemini-data:/root/.gemini:Z \
     -v agy-config-data:/root/.config/antigravity:Z \
     -v "${PWD}:/workspace:Z" \
