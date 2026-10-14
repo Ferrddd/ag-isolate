@@ -6,6 +6,7 @@ apt install -y \
     procps \
     git \
     python3 \
-    nodejs
+    nodejs \
+    xclip
 
 curl -fsSL https://antigravity.google/cli/install.sh | bash
